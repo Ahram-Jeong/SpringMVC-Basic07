@@ -1,11 +1,17 @@
 package ash.exception.servlet;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 @Controller
@@ -30,6 +36,22 @@ public class ErrorPageController {
         log.info("errorPage 500");
         printErrorInfo(request);
         return "error-page/500";
+    }
+
+    @RequestMapping(value = "/error-page/500", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Map<String, Object>> errorPage500Api(HttpServletRequest request, HttpServletResponse response) {
+        log.info("API errorPage 500");
+
+        Map<String, Object> result = new HashMap<>();
+        Exception ex = (Exception) request.getAttribute(ERROR_EXCEPTION);
+
+        result.put("status", request.getAttribute(ERROR_STATUS_CODE));
+        result.put("message", ex.getMessage());
+        // HashMap은 순서를 보장하지 않으므로 결과에 순서가 바뀌어 보일 수 있음
+
+        Integer statusCode = (Integer) request.getAttribute(RequestDispatcher.ERROR_STATUS_CODE);
+
+        return new ResponseEntity<>(result, HttpStatus.valueOf(statusCode));
     }
 
     private void printErrorInfo(HttpServletRequest request) {
