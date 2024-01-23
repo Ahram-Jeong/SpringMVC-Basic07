@@ -29,7 +29,7 @@ public class UserHandlerExceptionResolver implements HandlerExceptionResolver {
                     errorResult.put("ex", ex.getClass());
                     errorResult.put("message", ex.getMessage());
 
-                    String result = objectMapper.writeValueAsString(errorResult);// 객체를 문자로 변환
+                    String result = objectMapper.writeValueAsString(errorResult); // 객체를 문자로 변환
 
                     response.setContentType("application/json");
                     response.setCharacterEncoding("utf-8");
